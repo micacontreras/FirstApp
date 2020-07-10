@@ -15,6 +15,7 @@ import androidx.biometric.BiometricManager.from
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
 import com.example.firstapp.R
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -78,12 +79,12 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        /*val accessToken = AccessToken.getCurrentAccessToken()
+        val accessToken = AccessToken.getCurrentAccessToken()
         val isLoggedIn = accessToken != null && !accessToken.isExpired
 
         if(isLoggedIn){
             Toast.makeText(requireContext(), "Sesion ya iniciada", Toast.LENGTH_LONG).show()
-        }*/
+        }
 
         account = GoogleSignIn.getLastSignedInAccount(requireContext())
         if(account != null){

@@ -11,5 +11,7 @@
 
     <!-- Clave de servidor para reCaptcha -->
     <string name="my_site_key">6LeNvK8ZAAAAAJNDMpC8HPN7mdDl_rcyNnCnWfL3</string>
+    <string name="duracion">Duración</string>
+    <string name="descripcion">Descripcion</string>
 
 </resources>
