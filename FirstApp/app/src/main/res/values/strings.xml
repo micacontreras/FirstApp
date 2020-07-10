@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">FirstApp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">583102955970137</string>
+    <string name="fb_login_protocol_scheme">fb583102955970137</string>
+
+    <!-- Clave de servidor para autenticacion -->
+    <string name="server_key_sign_in">253456188929-fuhmjaj0moqed4jlkd5cm1q88gonee5g.apps.googleusercontent.com</string>
+
+    <!-- Clave de servidor para reCaptcha -->
+    <string name="my_site_key">6LeNvK8ZAAAAAJNDMpC8HPN7mdDl_rcyNnCnWfL3</string>
+
+</resources>
