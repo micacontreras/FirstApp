@@ -15,26 +15,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/item_name"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-black"
-            android:textAlignment="center"
-            android:textSize="20sp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Nombre tarea" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-black"
+                android:paddingVertical="@dimen/margin"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                tools:text="Nombre tarea" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingVertical="@dimen/margin"
+                android:textAlignment="textEnd"
+                android:textColor="@color/toDo"
+                android:textSize="15sp"
+                tools:text="To Do" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/item_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/margins"
             android:text="@string/descripcion"
-            app:layout_constraintTop_toBottomOf="@+id/item_name"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
             tools:layout_editor_absoluteX="4dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
