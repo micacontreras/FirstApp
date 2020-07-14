@@ -16,4 +16,6 @@ interface TasksDao {
     @Query("DELETE FROM tasks WHERE taskName = :taskName")
     suspend fun delete(taskName: String)
 
+    @Query("SELECT * FROM Tasks WHERE taskName > :taskName")
+    fun getTask(taskName: String): Tasks
 }

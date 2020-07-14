@@ -32,8 +32,8 @@ class TasksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        RegisterListener()
-        RegisterObservers()
+        registerListener()
+        registerObservers()
     }
 
     override fun onStart() {
@@ -42,7 +42,7 @@ class TasksFragment : Fragment() {
         setupRecyclerView()
     }
 
-    private fun RegisterObservers() {
+    private fun registerObservers() {
         taskViewModel.allTasks.observe(viewLifecycleOwner, Observer { history ->
             history?.let {
                 task_progress_bar.visibility = View.INVISIBLE
@@ -67,7 +67,7 @@ class TasksFragment : Fragment() {
         }
     }
 
-    private fun RegisterListener() {
+    private fun registerListener() {
         task_add.setOnClickListener {
             TasksFragmentDirections.navigateToDetail()
         }

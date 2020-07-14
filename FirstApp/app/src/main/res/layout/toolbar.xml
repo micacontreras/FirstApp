@@ -28,7 +28,7 @@
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/toolbar_save"
             style="@style/ToolbarTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
