@@ -69,7 +69,7 @@ class TasksFragment : Fragment() {
 
     private fun registerListener() {
         task_add.setOnClickListener {
-            TasksFragmentDirections.navigateToDetail()
+            findNavController().navigate(TasksFragmentDirections.navigateToDetail())
         }
     }
 }

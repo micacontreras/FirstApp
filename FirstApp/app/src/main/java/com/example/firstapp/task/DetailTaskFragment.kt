@@ -3,11 +3,10 @@ package com.example.firstapp.task
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.firstapp.R
 import com.example.firstapp.task.db.Tasks
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
@@ -57,19 +56,26 @@ class DetailTaskFragment : Fragment() {
         registerListeners()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val inflater = requireActivity().menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     private fun registerListeners() {
-        toolbar_save.setOnClickListener {
-            if(confirmInput()){
+        detail_toolbar.menu.getItem(0).setOnMenuItemClickListener {
+            if(!confirmInput()){
                 val photo = createRequest()
                 detailTaskViewModel.insert(photo)
+                findNavController().navigateUp()
             }
+            true
         }
 
         detail_color.setOnClickListener { displayColorPalette() }
     }
 
     private fun registerObservers() {
-        TODO("Not yet implemented")
     }
 
     private fun validateTitle(): Boolean {

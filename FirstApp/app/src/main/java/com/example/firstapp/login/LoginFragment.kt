@@ -14,6 +14,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.from
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.firstapp.R
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -101,7 +102,7 @@ class LoginFragment : Fragment() {
         facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
             override fun onSuccess(loginResult: LoginResult?) {
                 Toast.makeText(requireContext(), "Login success", Toast.LENGTH_LONG).show()
-                LoginFragmentDirections.navigateToTasks()
+                findNavController().navigate(LoginFragmentDirections.navigateToTasks())
             }
             override fun onCancel() {
                 Toast.makeText(requireContext(), "Cancel", Toast.LENGTH_LONG).show()
@@ -149,7 +150,7 @@ class LoginFragment : Fragment() {
                 if (!userResponseToken.isNullOrEmpty()) {
                     // Validate the user response token using the reCAPTCHA siteverify API.
                     //No aplicable la verificacion con backend
-                    LoginFragmentDirections.navigateToTasks()
+                    findNavController().navigate(LoginFragmentDirections.navigateToTasks())
                 }
             }
             .addOnFailureListener(requireActivity()) { e ->
@@ -214,7 +215,7 @@ class LoginFragment : Fragment() {
                 ) {
                     super.onAuthenticationSucceeded(result)
                     requireActivity().runOnUiThread {
-                        LoginFragmentDirections.navigateToTasks()
+                        findNavController().navigate(LoginFragmentDirections.navigateToTasks())
                     }
                 }
             })
