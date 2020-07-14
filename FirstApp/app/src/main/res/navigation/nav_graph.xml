@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailTaskFragment"
-        android:name="com.example.firstapp.DetailTaskFragment"
+        android:name="com.example.firstapp.task.DetailTaskFragment"
         android:label="fragment_detail_task"
         tools:layout="@layout/fragment_detail_task" />
 </navigation>

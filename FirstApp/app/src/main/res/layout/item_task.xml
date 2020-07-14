@@ -36,6 +36,7 @@
                 tools:text="Nombre tarea" />
 
             <TextView
+                android:id="@+id/item_status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

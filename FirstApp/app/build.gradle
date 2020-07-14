@@ -43,6 +43,9 @@ dependencies {
     //CardView
     implementation "androidx.cardview:cardview:1.0.0"
 
+    //RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+
     //Circular image
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
@@ -73,5 +76,16 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:2.2.5"
     implementation "androidx.room:room-ktx:$room_version"
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
+
+    //Corrutinas
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_kotlin_coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_kotlin_coroutines"
+
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
 }

@@ -83,12 +83,12 @@ class LoginFragment : Fragment() {
         val isLoggedIn = accessToken != null && !accessToken.isExpired
 
         if(isLoggedIn){
-            Toast.makeText(requireContext(), "Sesion ya iniciada", Toast.LENGTH_LONG).show()
+            LoginFragmentDirections.navigateToTasks()
         }
 
         account = GoogleSignIn.getLastSignedInAccount(requireContext())
         if(account != null){
-            Toast.makeText(requireContext(), account?.familyName.toString(), Toast.LENGTH_LONG).show()
+            LoginFragmentDirections.navigateToTasks()
         }
 
     }
@@ -101,6 +101,7 @@ class LoginFragment : Fragment() {
         facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
             override fun onSuccess(loginResult: LoginResult?) {
                 Toast.makeText(requireContext(), "Login success", Toast.LENGTH_LONG).show()
+                LoginFragmentDirections.navigateToTasks()
             }
             override fun onCancel() {
                 Toast.makeText(requireContext(), "Cancel", Toast.LENGTH_LONG).show()
@@ -133,7 +134,6 @@ class LoginFragment : Fragment() {
             }
         } catch (e: ApiException) {
             Log.e("failed code=", e.statusCode.toString())
-            Toast.makeText(requireContext(), "Fail", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -149,7 +149,7 @@ class LoginFragment : Fragment() {
                 if (!userResponseToken.isNullOrEmpty()) {
                     // Validate the user response token using the reCAPTCHA siteverify API.
                     //No aplicable la verificacion con backend
-                    Toast.makeText(requireContext(), "Captcha successfully", Toast.LENGTH_LONG).show()
+                    LoginFragmentDirections.navigateToTasks()
                 }
             }
             .addOnFailureListener(requireActivity()) { e ->
@@ -168,7 +168,7 @@ class LoginFragment : Fragment() {
     private fun checkBiometrics() {
         when (from(requireContext()).canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> apply {
-                Log.d("Sucess", "App can authenticate using biometrics.")
+                Log.d("Success", "App can authenticate using biometrics.")
                 showBiometricPrompt()
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE ->
@@ -210,15 +210,11 @@ class LoginFragment : Fragment() {
                 }
 
                 override fun onAuthenticationSucceeded(
-                    result: androidx.biometric.BiometricPrompt.AuthenticationResult
+                    result: BiometricPrompt.AuthenticationResult
                 ) {
                     super.onAuthenticationSucceeded(result)
                     requireActivity().runOnUiThread {
-                        Toast.makeText(
-                            requireContext(),
-                            "Fingerprint success",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        LoginFragmentDirections.navigateToTasks()
                     }
                 }
             })
