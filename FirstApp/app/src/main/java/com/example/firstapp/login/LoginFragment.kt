@@ -1,6 +1,7 @@
 package com.example.firstapp.login
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -82,14 +83,10 @@ class LoginFragment : Fragment() {
 
         val accessToken = AccessToken.getCurrentAccessToken()
         val isLoggedIn = accessToken != null && !accessToken.isExpired
-
-        if(isLoggedIn){
-            LoginFragmentDirections.navigateToTasks()
-        }
-
         account = GoogleSignIn.getLastSignedInAccount(requireContext())
-        if(account != null){
-            LoginFragmentDirections.navigateToTasks()
+
+        if(account != null || isLoggedIn){
+            if(!checkCredentials().isNullOrEmpty()) LoginFragmentDirections.navigateToTasks()
         }
 
     }
@@ -101,6 +98,7 @@ class LoginFragment : Fragment() {
 
         facebook_button.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
             override fun onSuccess(loginResult: LoginResult?) {
+                saveUser(loginResult?.accessToken?.userId)
                 Toast.makeText(requireContext(), "Login success", Toast.LENGTH_LONG).show()
                 findNavController().navigate(LoginFragmentDirections.navigateToTasks())
             }
@@ -130,7 +128,8 @@ class LoginFragment : Fragment() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             if (completedTask.isSuccessful) {
-               Toast.makeText(requireContext(), "Login with google successfully", Toast.LENGTH_LONG).show()
+                saveUser(completedTask.result?.givenName)
+                Toast.makeText(requireContext(), "Login with google successfully", Toast.LENGTH_LONG).show()
                 validateCaptcha()
             }
         } catch (e: ApiException) {
@@ -220,6 +219,21 @@ class LoginFragment : Fragment() {
                 }
             })
         biometricPrompt.authenticate(promptInfo)
+    }
+
+    fun checkCredentials(): String? {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        return sharedPref?.getString("Name", null)
+    }
+
+    private fun saveUser(name: String?) {
+        if (!name.isNullOrEmpty()) {
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            with(sharedPref.edit()) {
+                putString("Name", name)
+                apply()
+            }
+        }
     }
 
     companion object {

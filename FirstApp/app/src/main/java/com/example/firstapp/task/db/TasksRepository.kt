@@ -9,7 +9,13 @@ class TasksRepository(private val tasksDao: TasksDao) {
     suspend fun insert(task: Tasks) {
         tasksDao.insert(task)
     }
+
     suspend fun delete(taskName: String){
         tasksDao.delete(taskName)
     }
+
+    fun getTask(taskName: String): LiveData<Tasks>{
+        return tasksDao.getTask(taskName)
+    }
+
 }

@@ -38,6 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/detail_toolbar">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/detail_title_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title" />
@@ -106,6 +107,12 @@
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/margin">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Todo el dia"
+                android:layout_marginTop="@dimen/margin"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -113,16 +120,19 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/detail_date_start"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     tools:text="viernes, 10 de julio" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/detail_hour_start"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_chevron_right_black_24dp" />
-
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    tools:text="17:30" />
             </LinearLayout>
 
             <LinearLayout
@@ -131,16 +141,19 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/detail_date_end"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     tools:text="viernes, 10 de julio" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/detail_hour_end"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_chevron_right_black_24dp" />
-
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    tools:text="17:30" />
             </LinearLayout>
 
         </LinearLayout>
@@ -176,21 +189,5 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
     </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/detail_delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cardElevation="4sp">
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_delete_black_24dp" />
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,11 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.firstapp.R
 import com.example.firstapp.task.db.Tasks
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
@@ -30,6 +33,9 @@ class DetailTaskFragment : Fragment() {
     private var index = 0
     private var colorEvent: String? = null
 
+    private val args: DetailTaskFragmentArgs by navArgs()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         detailTaskViewModel = ViewModelProvider(this).get(DetailTaskViewModel::class.java)
@@ -52,8 +58,42 @@ class DetailTaskFragment : Fragment() {
 
         colorEvent = getString(R.string.defaultColor)
 
-        registerObservers()
+        loadData()
+
         registerListeners()
+    }
+
+    /*override fun onResume() {
+        super.onResume()
+        parentFragmentManager.setFragmentResultListener("task", this,
+            FragmentResultListener { _, bundle ->
+                bundle.getString("TaskName").also {
+                    val response = detailTaskViewModel.getTask(it.toString())
+                    response?.let { response -> setupScreen(response) }
+                }
+            })
+    }*/
+
+    private fun loadData() {
+        if(args.TaskName != "null" && args.TaskName != null ){
+            detailTaskViewModel.getTask(args.TaskName.toString())?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { task ->
+                task.let {  setupScreen(task) }
+            })
+
+
+            //val response = detailTaskViewModel.getTask(it.TaskName.toString())
+            //response?.let { response ->
+              //  setupScreen(response) }
+        }
+    }
+
+    private fun setupScreen(task: Tasks) {
+        detail_title.editText?.setText(task.taskName)
+        detail_title_et.setText(task.taskName)
+        detail_description.editText?.setText(task.description)
+        detail_date_start.setText(task.startDate.toString())
+        detail_date_end.setText(task.endDate.toString())
+        detail_color_image.background.setColorFilter(Color.parseColor(colorEvent), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -73,9 +113,6 @@ class DetailTaskFragment : Fragment() {
         }
 
         detail_color.setOnClickListener { displayColorPalette() }
-    }
-
-    private fun registerObservers() {
     }
 
     private fun validateTitle(): Boolean {
@@ -122,7 +159,7 @@ class DetailTaskFragment : Fragment() {
 
                 }
             })
-            .showBottomSheet(fragmentManager!!)
+            .showBottomSheet(requireFragmentManager())
     }
 
 }

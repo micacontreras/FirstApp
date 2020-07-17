@@ -1,6 +1,7 @@
 package com.example.firstapp.task.db
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -17,5 +18,5 @@ interface TasksDao {
     suspend fun delete(taskName: String)
 
     @Query("SELECT * FROM Tasks WHERE taskName > :taskName")
-    fun getTask(taskName: String): Tasks
+    fun getTask(taskName: String): LiveData<Tasks>
 }
