@@ -3,7 +3,7 @@ package com.example.firstapp.task
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.firstapp.task.db.TaskDataBase
-import com.example.firstapp.task.db.Tasks
+import com.example.firstapp.task.db.TasksEntity
 import com.example.firstapp.task.db.TasksRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: TasksRepository
 
-    var allTasks: LiveData<List<Tasks>>? = null
+    var allTasksEntity: LiveData<List<TasksEntity>>? = null
 
     init {
         val tasksDao = TaskDataBase.getDatabase(application).taskDao()
@@ -19,7 +19,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getAllTasks(){
-        allTasks = repository.allTasks
+        allTasksEntity = repository.allTasksEntity
     }
 
     fun delete(taskName: String)= viewModelScope.launch(Dispatchers.IO) {

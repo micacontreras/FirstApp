@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapp.R
-import com.example.firstapp.task.db.Tasks
+import com.example.firstapp.task.db.TasksEntity
 import kotlinx.android.synthetic.main.item_task.view.*
 
 class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<TaskAdapter.TasksViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var listTasks = emptyList<Tasks>()
-    lateinit var onClick: (Tasks) -> Unit
-    lateinit var onLongClick: (Tasks) ->Unit
+    private var listTasks = emptyList<TasksEntity>()
+    lateinit var onClick: (TasksEntity) -> Unit
+    lateinit var onLongClick: (TasksEntity) ->Unit
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -25,8 +25,8 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         holder.bindResponse(current, onClick, onLongClick)
     }
 
-    internal fun setItem(tasksList: List<Tasks>) {
-        this.listTasks = tasksList
+    internal fun setItem(tasksEntityList: List<TasksEntity>) {
+        this.listTasks = tasksEntityList
         notifyDataSetChanged()
     }
 
@@ -36,7 +36,7 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
 
         private var view: View = v
 
-        fun bindResponse(task: Tasks, onClick: (Tasks) -> Unit, onLongClick: (Tasks) -> Unit) = with(itemView){
+        fun bindResponse(task: TasksEntity, onClick: (TasksEntity) -> Unit, onLongClick: (TasksEntity) -> Unit) = with(itemView){
             view.item_name.text = task.taskName
             view.item_description.text = task.description
             view.item_status.text = "To do"

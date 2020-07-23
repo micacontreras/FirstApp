@@ -1,6 +1,12 @@
 package com.example.firstapp.task
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +18,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.firstapp.R
+import com.example.firstapp.service.TaskService
 import com.example.firstapp.showDialog
+import com.example.firstapp.task.db.Tasks
+import com.example.firstapp.task.db.TasksEntity
 import kotlinx.android.synthetic.main.fragment_tasks.*
 
 /**
@@ -22,6 +31,9 @@ class TasksFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var adapter: TaskAdapter
+
+    private lateinit var taskService: TaskService
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +59,12 @@ class TasksFragment : Fragment() {
     }
 
     private fun registerObservers() {
-        taskViewModel.allTasks?.observe(viewLifecycleOwner, Observer { task ->
+        taskViewModel.allTasksEntity?.observe(viewLifecycleOwner, Observer { task ->
             task_progress_bar.visibility = View.INVISIBLE
             if (task != null) {
                 if (task.isNotEmpty()) {
                     adapter.setItem(task)
+                    startTaskService(task)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -96,6 +109,34 @@ class TasksFragment : Fragment() {
                 },
                 "Cancel"
             )
+        }
+    }
+
+    private fun startTaskService(tasks: List<TasksEntity>) {
+        val listTasks: MutableList<Tasks> = ArrayList()
+        tasks.forEach {
+            val taskModel = Tasks(it.taskName, it.description, it.startDate, it.startTime, it.colorEvent, it.colorEventInt)
+            listTasks.add(taskModel)
+        }
+
+        Intent(requireContext(), TaskService::class.java).also { intent ->
+            intent.putParcelableArrayListExtra("Tasks", listTasks as ArrayList<out Parcelable?>?)
+            activity?.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    private var mBound: Boolean = false
+
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as TaskService.LocalBinder
+            taskService = binder.getService()
+            mBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
         }
     }
 }

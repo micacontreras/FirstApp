@@ -67,6 +67,7 @@ class LoginFragment : Fragment() {
         fingerprint_button.setOnClickListener {
             checkBiometrics()
         }
+        navigate.setOnClickListener { findNavController().navigate(LoginFragmentDirections.navigateToPermissions()) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -86,7 +87,7 @@ class LoginFragment : Fragment() {
         account = GoogleSignIn.getLastSignedInAccount(requireContext())
 
         if(account != null || isLoggedIn){
-            if(!checkCredentials().isNullOrEmpty()) LoginFragmentDirections.navigateToTasks()
+            if(!checkCredentials().isNullOrEmpty()) LoginFragmentDirections.navigateToPermissions()
         }
 
     }
@@ -100,7 +101,7 @@ class LoginFragment : Fragment() {
             override fun onSuccess(loginResult: LoginResult?) {
                 saveUser(loginResult?.accessToken?.userId)
                 Toast.makeText(requireContext(), "Login success", Toast.LENGTH_LONG).show()
-                findNavController().navigate(LoginFragmentDirections.navigateToTasks())
+                findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
             }
             override fun onCancel() {
                 Toast.makeText(requireContext(), "Cancel", Toast.LENGTH_LONG).show()
@@ -149,7 +150,7 @@ class LoginFragment : Fragment() {
                 if (!userResponseToken.isNullOrEmpty()) {
                     // Validate the user response token using the reCAPTCHA siteverify API.
                     //No aplicable la verificacion con backend
-                    findNavController().navigate(LoginFragmentDirections.navigateToTasks())
+                    findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
                 }
             }
             .addOnFailureListener(requireActivity()) { e ->
@@ -214,14 +215,14 @@ class LoginFragment : Fragment() {
                 ) {
                     super.onAuthenticationSucceeded(result)
                     requireActivity().runOnUiThread {
-                        findNavController().navigate(LoginFragmentDirections.navigateToTasks())
+                        findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
                     }
                 }
             })
         biometricPrompt.authenticate(promptInfo)
     }
 
-    fun checkCredentials(): String? {
+    private fun checkCredentials(): String? {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
         return sharedPref?.getString("Name", null)
     }

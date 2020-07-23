@@ -16,7 +16,8 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="color_del_evento">Color del evento</string>
-    <string name="defaultColor">#03A9F4</string>
+    <string name="defaultColor">#e0e0e0</string>
     <string name="save">Save</string>
+    <string name="notification_text"> ha comenzado</string>
 
 </resources>

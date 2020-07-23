@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 
 class TasksRepository(private val tasksDao: TasksDao) {
 
-    val allTasks: LiveData<List<Tasks>> = tasksDao.getAll()
+    val allTasksEntity: LiveData<List<TasksEntity>> = tasksDao.getAll()
 
-    suspend fun insert(task: Tasks) {
+    suspend fun insert(task: TasksEntity) {
         tasksDao.insert(task)
     }
 
@@ -14,8 +14,7 @@ class TasksRepository(private val tasksDao: TasksDao) {
         tasksDao.delete(taskName)
     }
 
-    fun getTask(taskName: String): LiveData<Tasks>{
+    fun getTask(taskName: String): LiveData<TasksEntity>{
         return tasksDao.getTask(taskName)
     }
-
 }

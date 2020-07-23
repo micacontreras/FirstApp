@@ -1,22 +1,19 @@
 package com.example.firstapp.task.db
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface TasksDao {
-    @Query("SELECT * FROM Tasks")
-    fun getAll(): LiveData<List<Tasks>>
+    @Query("SELECT * FROM TasksEntity")
+    fun getAll(): LiveData<List<TasksEntity>>
 
-    @Insert
-    suspend fun insert(vararg task: Tasks)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg task: TasksEntity)
 
-    @Query("DELETE FROM tasks WHERE taskName = :taskName")
+    @Query("DELETE FROM TasksEntity WHERE taskName = :taskName")
     suspend fun delete(taskName: String)
 
-    @Query("SELECT * FROM Tasks WHERE taskName > :taskName")
-    fun getTask(taskName: String): LiveData<Tasks>
+    @Query("SELECT * FROM TasksEntity WHERE taskName = :taskName")
+    fun getTask(taskName: String): LiveData<TasksEntity>
 }

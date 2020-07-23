@@ -5,33 +5,44 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.firstapp.R
-import com.example.firstapp.task.db.Tasks
+import com.example.firstapp.task.db.TasksEntity
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import com.github.dhaval2404.colorpicker.listener.ColorListener
 import com.github.dhaval2404.colorpicker.model.ColorSwatch
 import com.google.android.material.textfield.TextInputLayout
+import com.philliphsu.bottomsheetpickers.date.BottomSheetDatePickerDialog
+import com.philliphsu.bottomsheetpickers.date.DatePickerDialog
+import com.philliphsu.bottomsheetpickers.time.BottomSheetTimePickerDialog
+import com.philliphsu.bottomsheetpickers.time.grid.GridTimePickerDialog
 import kotlinx.android.synthetic.main.fragment_detail_task.*
-import kotlinx.android.synthetic.main.toolbar.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
+
 
 /**
  * A simple [Fragment] subclass.
  */
-class DetailTaskFragment : Fragment() {
+class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
+    BottomSheetTimePickerDialog.OnTimeSetListener {
 
     private lateinit var detailTaskViewModel: DetailTaskViewModel
 
     private lateinit var titleLayout: TextInputLayout
     private lateinit var descriptionLayout: TextInputLayout
 
-    private var index = 0
     private var colorEvent: String? = null
+    private var colorEventInt: Int? = null
+    private lateinit var dateEvent: Date
+    private lateinit var timeEvent: Date
+    private var savedTaskName: String? = null
+
+    private val calendar: Calendar = Calendar.getInstance()
 
     private val args: DetailTaskFragmentArgs by navArgs()
 
@@ -57,43 +68,12 @@ class DetailTaskFragment : Fragment() {
         setHasOptionsMenu(true)
 
         colorEvent = getString(R.string.defaultColor)
+        colorEventInt = -2039584
 
         loadData()
+        loadDate(false)
 
         registerListeners()
-    }
-
-    /*override fun onResume() {
-        super.onResume()
-        parentFragmentManager.setFragmentResultListener("task", this,
-            FragmentResultListener { _, bundle ->
-                bundle.getString("TaskName").also {
-                    val response = detailTaskViewModel.getTask(it.toString())
-                    response?.let { response -> setupScreen(response) }
-                }
-            })
-    }*/
-
-    private fun loadData() {
-        if(args.TaskName != "null" && args.TaskName != null ){
-            detailTaskViewModel.getTask(args.TaskName.toString())?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { task ->
-                task.let {  setupScreen(task) }
-            })
-
-
-            //val response = detailTaskViewModel.getTask(it.TaskName.toString())
-            //response?.let { response ->
-              //  setupScreen(response) }
-        }
-    }
-
-    private fun setupScreen(task: Tasks) {
-        detail_title.editText?.setText(task.taskName)
-        detail_title_et.setText(task.taskName)
-        detail_description.editText?.setText(task.description)
-        detail_date_start.setText(task.startDate.toString())
-        detail_date_end.setText(task.endDate.toString())
-        detail_color_image.background.setColorFilter(Color.parseColor(colorEvent), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -104,15 +84,43 @@ class DetailTaskFragment : Fragment() {
 
     private fun registerListeners() {
         detail_toolbar.menu.getItem(0).setOnMenuItemClickListener {
-            if(!confirmInput()){
-                val photo = createRequest()
-                detailTaskViewModel.insert(photo)
+            if (!confirmInput()) {
+                val task = createRequest()
+                detailTaskViewModel.insert(task)
                 findNavController().navigateUp()
             }
             true
         }
 
         detail_color.setOnClickListener { displayColorPalette() }
+
+        detail_date_start.setOnClickListener {
+            val date: DatePickerDialog = BottomSheetDatePickerDialog.Builder(
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+                .setHeaderColor(colorEventInt!!)
+                .setThemeDark(true)
+                .build()
+            date.show(requireFragmentManager(), "Date")
+        }
+
+        detail_toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+
+        detail_hour_start.setOnClickListener {
+            val grid = GridTimePickerDialog.Builder(
+                this,
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                false
+            )
+                .setHeaderColor(colorEventInt!!)
+                .setThemeDark(true)
+                .build()
+            grid.show(requireFragmentManager(), "Time")
+        }
     }
 
     private fun validateTitle(): Boolean {
@@ -140,12 +148,73 @@ class DetailTaskFragment : Fragment() {
     private fun confirmInput(): Boolean =
         !validateTitle() || !validateDescription()
 
-    private fun createRequest(): Tasks {
+    private fun createRequest(): TasksEntity {
         val title = detail_title.editText?.text.toString().trim()
         val description = detail_description.editText?.text.toString().trim()
-        val startDay: Date = Date()
-        val endDate: Date = Date()
-        return Tasks(index, title, description, startDay, endDate, colorEvent.toString())
+        val startDay: Date = dateEvent
+        val startTime: Date = timeEvent
+        return TasksEntity(
+            title,
+            description,
+            startDay,
+            startTime,
+            colorEvent.toString(),
+            colorEventInt!!
+        )
+    }
+
+    private fun loadDate(currentDate: Boolean, dateSaved: Date? = null): List<String> {
+        var date = 0L
+        val dateList: MutableList<String> = ArrayList()
+
+        date = if (!currentDate) {
+            System.currentTimeMillis()
+        } else {
+            dateSaved?.time!!
+        }
+        //Otra forma fecha
+        val format: DateFormat = SimpleDateFormat("E, dd MMM yyyy")
+        val dateFormat = format.format(date)
+        dateList.add(dateFormat)
+
+        //Otra forma hora
+        val format2: DateFormat = SimpleDateFormat("hh:mm a")
+        val timeFormat = format2.format(date)
+        dateList.add(timeFormat)
+
+        if(!currentDate){
+            detail_date_start.text = dateFormat
+            detail_hour_start.text = timeFormat
+        }
+        return dateList
+    }
+
+    private fun loadData() {
+        if (args.TaskName != "null" && args.TaskName != null) {
+            detailTaskViewModel.getTask(args.TaskName.toString())
+                ?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { task ->
+                    savedTaskName = args.TaskName
+                    task.let { setupScreen(task) }
+                })
+        }
+    }
+
+    private fun setupScreen(task: TasksEntity) {
+        detail_title.editText?.setText(task.taskName)
+        detail_title_et.setText(task.taskName)
+        detail_description.editText?.setText(task.description)
+        detail_date_start.text = loadDate(true, task.startDate)[0]
+        detail_hour_start.text = loadDate(true, task.startTime)[1]
+
+        dateEvent = task.startDate
+        timeEvent = task.startTime
+
+        colorEvent = task.colorEvent
+        colorEventInt = task.colorEventInt
+        detail_color_image.background.setColorFilter(
+            Color.parseColor(colorEvent),
+            PorterDuff.Mode.SRC_ATOP
+        )
     }
 
     private fun displayColorPalette() {
@@ -155,11 +224,43 @@ class DetailTaskFragment : Fragment() {
             .setColorListener(object : ColorListener {
                 override fun onColorSelected(color: Int, colorHex: String) {
                     colorEvent = colorHex
-                    detail_color_image.background.setColorFilter(Color.parseColor(colorHex), PorterDuff.Mode.SRC_ATOP)
+                    colorEventInt = color
+                    detail_color_image.background.setColorFilter(
+                        Color.parseColor(colorHex),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
 
                 }
             })
             .showBottomSheet(requireFragmentManager())
     }
+
+    override fun onDateSet(
+        dialog: DatePickerDialog?,
+        year: Int,
+        monthOfYear: Int,
+        dayOfMonth: Int
+    ) {
+        val zoneTime = TimeZone.getTimeZone("America/Argentina/Buenos_Aires")
+        val cal = Calendar.getInstance()
+        calendar.timeZone = zoneTime
+        cal[Calendar.YEAR] = year
+        cal[Calendar.MONTH] = monthOfYear
+        cal[Calendar.DAY_OF_MONTH] = dayOfMonth
+        val format: DateFormat = SimpleDateFormat("E, dd MMM yyyy")
+        dateEvent = cal.time
+        detail_date_start.text = format.format(cal.time)
+    }
+
+    override fun onTimeSet(viewGroup: ViewGroup?, hourOfDay: Int, minute: Int) {
+        val cal: Calendar = GregorianCalendar()
+        cal[Calendar.HOUR_OF_DAY] = hourOfDay
+        cal[Calendar.MINUTE] = minute
+
+        val format2: DateFormat = SimpleDateFormat("hh:mm a")
+        timeEvent = cal.time
+        detail_hour_start.text = format2.format(cal.time)
+    }
+
 
 }

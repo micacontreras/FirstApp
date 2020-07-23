@@ -20,7 +20,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.incremental":"true"]
+                arguments = ["room.incremental": "true"]
             }
         }
     }
@@ -55,8 +55,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
     // Navigation
-    implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "android.arch.navigation:navigation-ui-ktx:$navigation_version"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0-rc02'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.0.0-rc02'
 
     //API Google
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
@@ -106,8 +106,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
         exclude group: 'com.android.support', module: 'gridlayout-v7'
     }
-    implementation 'com.android.support:appcompat-v7:[LATEST_VERSION]'
-    implementation 'com.android.support:design:[LATEST_VERSION]'
-    implementation 'com.android.support:gridlayout-v7:[LATEST_VERSION]'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
 }

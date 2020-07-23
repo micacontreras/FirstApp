@@ -11,8 +11,8 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/navigateToTasks"
-            app:destination="@id/tasksFragment" />
+            android:id="@+id/navigateToPermissions"
+            app:destination="@id/permissionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/tasksFragment"
@@ -33,5 +33,13 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="null" />
+    </fragment>
+    <fragment
+        android:id="@+id/permissionsFragment"
+        android:name="com.example.firstapp.PermissionsFragment"
+        android:label="PermissionsFragment" >
+        <action
+            android:id="@+id/navigateToTasks"
+            app:destination="@id/tasksFragment" />
     </fragment>
 </navigation>
