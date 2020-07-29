@@ -38,8 +38,8 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
 
     private var colorEvent: String? = null
     private var colorEventInt: Int? = null
-    private lateinit var dateEvent: Date
-    private lateinit var timeEvent: Date
+    private var dateEvent = Date()
+    private var timeEvent = Date()
     private var savedTaskName: String? = null
 
     private val calendar: Calendar = Calendar.getInstance()
@@ -154,6 +154,7 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val startDay: Date = dateEvent
         val startTime: Date = timeEvent
         return TasksEntity(
+            0L,
             title,
             description,
             startDay,

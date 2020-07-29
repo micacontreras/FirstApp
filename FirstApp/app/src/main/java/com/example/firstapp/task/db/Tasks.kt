@@ -6,6 +6,7 @@ import java.util.*
 
 @Parcelize
 data class Tasks(
+    val id: Long,
     val taskName: String,
     val description: String,
     val startDate: Date,

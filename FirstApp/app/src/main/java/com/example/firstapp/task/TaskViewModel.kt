@@ -1,7 +1,9 @@
 package com.example.firstapp.task
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.firstapp.task.db.TaskDataBase
 import com.example.firstapp.task.db.TasksEntity
 import com.example.firstapp.task.db.TasksRepository
@@ -18,11 +20,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         repository = TasksRepository(tasksDao)
     }
 
-    fun getAllTasks(){
+    fun getAllTasks() {
         allTasksEntity = repository.allTasksEntity
     }
 
-    fun delete(taskName: String)= viewModelScope.launch(Dispatchers.IO) {
+    fun delete(taskName: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(taskName)
     }
 }

@@ -5,17 +5,29 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
 import android.graphics.Color
 import android.os.Binder
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.loader.content.CursorLoader
+import androidx.loader.content.Loader
 import com.example.firstapp.R
+import com.example.firstapp.provider.TaskProvider
 import com.example.firstapp.task.db.Tasks
+import com.example.firstapp.task.db.TasksEntity
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 open class TaskService : Service() {
@@ -34,6 +46,8 @@ open class TaskService : Service() {
     override fun onCreate() {
         super.onCreate()
         getCurrentTasks()
+
+
     }
 
     inner class LocalBinder : Binder() {
@@ -80,8 +94,8 @@ open class TaskService : Service() {
         ) {
             Log.d(TAG, "received stop broadcast")
             // Stop the service when the notification is tapped
-            unregisterReceiver(this)
-            stopSelf()
+            //unregisterReceiver(this)
+            //stopSelf()
         }
     }
 
@@ -117,7 +131,10 @@ open class TaskService : Service() {
 
     }
 
+
     companion object {
         private val TAG = TaskService::class.java.simpleName
+
     }
+
 }

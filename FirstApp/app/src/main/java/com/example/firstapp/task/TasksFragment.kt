@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.database.Cursor
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Parcelable
@@ -11,13 +12,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.loader.content.CursorLoader
+import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.firstapp.R
+import com.example.firstapp.provider.TaskProvider
 import com.example.firstapp.service.TaskService
 import com.example.firstapp.showDialog
 import com.example.firstapp.task.db.Tasks
@@ -56,7 +61,27 @@ class TasksFragment : Fragment() {
 
         registerListener()
         registerObservers()
+        provider()
     }
+
+    fun provider() {
+        androidx.loader.app.LoaderManager.getInstance(this)
+            .initLoader(LOADER_TASKS, null, loaderCallbacks)
+    }
+    private val loaderCallbacks =
+        object : androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor?> {
+            override fun onCreateLoader(id: Int, @Nullable args: Bundle?): Loader<Cursor?> {
+                return CursorLoader(
+                    requireContext(),
+                    TaskProvider.URI, arrayOf(TasksEntity.COLUMN_NAME),
+                    null, null, null
+                )
+            }
+
+            override fun onLoadFinished(loader: Loader<Cursor?>, data: Cursor?) {}
+
+            override fun onLoaderReset(loader: Loader<Cursor?>) {}
+        }
 
     private fun registerObservers() {
         taskViewModel.allTasksEntity?.observe(viewLifecycleOwner, Observer { task ->
@@ -104,7 +129,7 @@ class TasksFragment : Fragment() {
                 "Are you sure that you want to delete this task?",
                 "Ok",
                 {
-                    taskViewModel.delete(it.taskName)
+                    taskViewModel.delete(it.taskName!!)
                     taskViewModel.getAllTasks()
                 },
                 "Cancel"
@@ -115,7 +140,7 @@ class TasksFragment : Fragment() {
     private fun startTaskService(tasks: List<TasksEntity>) {
         val listTasks: MutableList<Tasks> = ArrayList()
         tasks.forEach {
-            val taskModel = Tasks(it.taskName, it.description, it.startDate, it.startTime, it.colorEvent, it.colorEventInt)
+            val taskModel = Tasks(it.id, it.taskName.toString(), it.description.toString(), it.startDate, it.startTime, it.colorEvent.toString(), it.colorEventInt!!)
             listTasks.add(taskModel)
         }
 
@@ -138,5 +163,9 @@ class TasksFragment : Fragment() {
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
         }
+    }
+
+    companion object{
+        private const val LOADER_TASKS = 1
     }
 }
