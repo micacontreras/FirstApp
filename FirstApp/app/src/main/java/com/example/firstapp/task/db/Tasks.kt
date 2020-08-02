@@ -12,5 +12,6 @@ data class Tasks(
     val startDate: Date,
     val startTime: Date,
     val colorEvent: String,
-    val colorEventInt: Int
+    val colorEventInt: Int,
+    var status: String
 ) : Parcelable

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.database.Cursor
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Parcelable
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.Nullable
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
@@ -22,12 +24,14 @@ import androidx.loader.content.Loader
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.firstapp.R
+import com.example.firstapp.getCurrentTasksEntity
 import com.example.firstapp.provider.TaskProvider
 import com.example.firstapp.service.TaskService
 import com.example.firstapp.showDialog
 import com.example.firstapp.task.db.Tasks
 import com.example.firstapp.task.db.TasksEntity
 import kotlinx.android.synthetic.main.fragment_tasks.*
+import kotlinx.coroutines.newFixedThreadPoolContext
 
 /**
  * A simple [Fragment] subclass.
@@ -39,6 +43,7 @@ class TasksFragment : Fragment() {
 
     private lateinit var taskService: TaskService
 
+    private val listTasks: MutableList<TasksEntity> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +57,7 @@ class TasksFragment : Fragment() {
     ): View? =
         inflater.inflate(R.layout.fragment_tasks, container, false)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,16 +70,25 @@ class TasksFragment : Fragment() {
         provider()
     }
 
-    fun provider() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        val newList = getCurrentTasksEntity(requireContext(), listTasks)
+        changeStatus(newList)
+    }
+
+    private fun provider() {
         androidx.loader.app.LoaderManager.getInstance(this)
             .initLoader(LOADER_TASKS, null, loaderCallbacks)
     }
+
     private val loaderCallbacks =
         object : androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor?> {
             override fun onCreateLoader(id: Int, @Nullable args: Bundle?): Loader<Cursor?> {
                 return CursorLoader(
                     requireContext(),
-                    TaskProvider.URI, arrayOf(TasksEntity.COLUMN_NAME),
+                    TaskProvider.URI, arrayOf(TasksEntity.COLUMN_ID, TasksEntity.COLUMN_NAME, TasksEntity.COLUMN_DESCRIPCION, TasksEntity.COLUMN_COLOR_EVENT,
+                    TasksEntity.COLUMN_COLOR_EVENT_INT, TasksEntity.COLUMN_START_DATE, TasksEntity.COLUMN_START_TIME, TasksEntity.COLUMN_STATUS),
                     null, null, null
                 )
             }
@@ -83,6 +98,7 @@ class TasksFragment : Fragment() {
             override fun onLoaderReset(loader: Loader<Cursor?>) {}
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun registerObservers() {
         taskViewModel.allTasksEntity?.observe(viewLifecycleOwner, Observer { task ->
             task_progress_bar.visibility = View.INVISIBLE
@@ -90,6 +106,7 @@ class TasksFragment : Fragment() {
                 if (task.isNotEmpty()) {
                     adapter.setItem(task)
                     startTaskService(task)
+                    listTasks.addAll(task)
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -101,6 +118,12 @@ class TasksFragment : Fragment() {
                 task_recycler_view.visibility = View.GONE
             }
         })
+    }
+
+    private fun changeStatus(list: List<TasksEntity>) {
+        list.forEach {
+            taskViewModel.insert(it)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -129,6 +152,7 @@ class TasksFragment : Fragment() {
                 "Are you sure that you want to delete this task?",
                 "Ok",
                 {
+                    adapter.setItem(null)
                     taskViewModel.delete(it.taskName!!)
                     taskViewModel.getAllTasks()
                 },
@@ -140,7 +164,16 @@ class TasksFragment : Fragment() {
     private fun startTaskService(tasks: List<TasksEntity>) {
         val listTasks: MutableList<Tasks> = ArrayList()
         tasks.forEach {
-            val taskModel = Tasks(it.id, it.taskName.toString(), it.description.toString(), it.startDate, it.startTime, it.colorEvent.toString(), it.colorEventInt!!)
+            val taskModel = Tasks(
+                it.id,
+                it.taskName.toString(),
+                it.description.toString(),
+                it.startDate,
+                it.startTime,
+                it.colorEvent.toString(),
+                it.colorEventInt!!,
+                it.status.toString()
+            )
             listTasks.add(taskModel)
         }
 
@@ -165,7 +198,7 @@ class TasksFragment : Fragment() {
         }
     }
 
-    companion object{
+    companion object {
         private const val LOADER_TASKS = 1
     }
 }

@@ -1,12 +1,8 @@
 package com.example.firstapp.task.db
 
 import android.database.Cursor
-import android.os.Bundle
-import androidx.annotation.Nullable
 import androidx.lifecycle.LiveData
-import androidx.loader.content.CursorLoader
-import androidx.loader.content.Loader
-import com.example.firstapp.provider.TaskProvider
+import java.util.*
 
 
 class TasksRepository(private val tasksDao: TasksDao) {
@@ -15,6 +11,10 @@ class TasksRepository(private val tasksDao: TasksDao) {
 
     suspend fun insert(task: TasksEntity) {
         tasksDao.insert(task)
+    }
+
+    suspend fun update(id: Long, tit: String?, descript: String?, date: Date?, time: Date?, color: String?, colorInt: Int?){
+        tasksDao.update(id, tit, descript, date, time, color, colorInt)
     }
 
     suspend fun delete(taskName: String) {

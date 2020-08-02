@@ -6,6 +6,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import java.util.*
 
 @Dao
 interface TasksDao {
@@ -14,6 +15,9 @@ interface TasksDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg task: TasksEntity)
+
+    @Query("UPDATE TasksEntity SET taskName = :tit, description = :descript, startDate = :date, startTime = :time, colorEvent = :color, colorEventInt = :colorInt  WHERE _id = :id")
+    suspend fun update(id: Long, tit: String?, descript: String?, date: Date?, time: Date?, color: String?, colorInt: Int?)
 
     @Query("DELETE FROM TasksEntity WHERE taskName = :taskName")
     suspend fun delete(taskName: String)

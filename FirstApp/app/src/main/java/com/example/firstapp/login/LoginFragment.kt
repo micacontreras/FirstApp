@@ -67,7 +67,6 @@ class LoginFragment : Fragment() {
         fingerprint_button.setOnClickListener {
             checkBiometrics()
         }
-        navigate.setOnClickListener { findNavController().navigate(LoginFragmentDirections.navigateToPermissions()) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,9 +84,10 @@ class LoginFragment : Fragment() {
         val accessToken = AccessToken.getCurrentAccessToken()
         val isLoggedIn = accessToken != null && !accessToken.isExpired
         account = GoogleSignIn.getLastSignedInAccount(requireContext())
-
         if(account != null || isLoggedIn){
-            if(!checkCredentials().isNullOrEmpty()) LoginFragmentDirections.navigateToPermissions()
+            if(!checkCredentials().isNullOrEmpty()) {
+                findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
+            }
         }
 
     }
@@ -148,8 +148,6 @@ class LoginFragment : Fragment() {
             .addOnSuccessListener(requireActivity()) { response ->
                 val userResponseToken = response.tokenResult
                 if (!userResponseToken.isNullOrEmpty()) {
-                    // Validate the user response token using the reCAPTCHA siteverify API.
-                    //No aplicable la verificacion con backend
                     findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
                 }
             }
@@ -215,6 +213,7 @@ class LoginFragment : Fragment() {
                 ) {
                     super.onAuthenticationSucceeded(result)
                     requireActivity().runOnUiThread {
+                        saveUser("Fingerprint")
                         findNavController().navigate(LoginFragmentDirections.navigateToPermissions())
                     }
                 }

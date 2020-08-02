@@ -5,10 +5,14 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <permission android:name="firstAppPermissions" />
+
     <permission
-        android:name="read.Permision"
-        android:readPermission="com.android.example.wordlistsqlwithcontentpfonrovider.PERMISSION"
-        android:writePermission="com.android.example.wordlistsqlwithcontentprovider.PERMISSION" />
+        android:name="firstAppPermissions._READ_PERMISSION"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="firstAppPermissions._WRITE_PERMISSION"
+        android:protectionLevel="normal" />
 
 
     <application
@@ -37,7 +41,8 @@
         <provider
             android:authorities="com.example.firstapp.provider"
             android:name=".provider.TaskProvider"
-            android:readPermission="ProviderFirstApp"
+            android:readPermission="firstAppPermissions._READ_PERMISSION"
+            android:writePermission="firstAppPermissions._WRITE_PERMISSION"
             android:enabled="true"
             android:exported="true"
             android:multiprocess="true"/>

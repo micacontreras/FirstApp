@@ -40,7 +40,7 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private var colorEventInt: Int? = null
     private var dateEvent = Date()
     private var timeEvent = Date()
-    private var savedTaskName: String? = null
+    private var savedTaskName: TasksEntity? = null
 
     private val calendar: Calendar = Calendar.getInstance()
 
@@ -85,8 +85,7 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private fun registerListeners() {
         detail_toolbar.menu.getItem(0).setOnMenuItemClickListener {
             if (!confirmInput()) {
-                val task = createRequest()
-                detailTaskViewModel.insert(task)
+                createRequest()
                 findNavController().navigateUp()
             }
             true
@@ -148,20 +147,27 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
     private fun confirmInput(): Boolean =
         !validateTitle() || !validateDescription()
 
-    private fun createRequest(): TasksEntity {
-        val title = detail_title.editText?.text.toString().trim()
-        val description = detail_description.editText?.text.toString().trim()
-        val startDay: Date = dateEvent
-        val startTime: Date = timeEvent
-        return TasksEntity(
-            0L,
-            title,
-            description,
-            startDay,
-            startTime,
-            colorEvent.toString(),
-            colorEventInt!!
-        )
+    private fun createRequest() {
+        if (savedTaskName != null) {
+            savedTaskName?.taskName = detail_title.editText?.text.toString().trim()
+            savedTaskName?.description = detail_description.editText?.text.toString().trim()
+            savedTaskName?.colorEvent = colorEvent.toString()
+            savedTaskName?.colorEventInt = colorEventInt
+            savedTaskName?.startTime = timeEvent
+            savedTaskName?.startDate = dateEvent
+            //detailTaskViewModel.insert(savedTaskName!!)
+            detailTaskViewModel.update(savedTaskName?.id!!, savedTaskName?.taskName, savedTaskName?.description, savedTaskName?.startDate,
+                savedTaskName?.startTime, savedTaskName?.colorEvent, savedTaskName?.colorEventInt)
+
+        } else {
+            val id = 0L
+            val title = detail_title.editText?.text.toString().trim()
+            val description = detail_description.editText?.text.toString().trim()
+            val startDay = dateEvent
+            val startTime = timeEvent
+            val status= getString(R.string.toDo)
+            detailTaskViewModel.insert(TasksEntity(id, title, description, startDay, startTime, colorEvent, colorEventInt, status))
+        }
     }
 
     private fun loadDate(currentDate: Boolean, dateSaved: Date? = null): List<String> {
@@ -183,7 +189,7 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         val timeFormat = format2.format(date)
         dateList.add(timeFormat)
 
-        if(!currentDate){
+        if (!currentDate) {
             detail_date_start.text = dateFormat
             detail_hour_start.text = timeFormat
         }
@@ -194,8 +200,10 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         if (args.TaskName != "null" && args.TaskName != null) {
             detailTaskViewModel.getTask(args.TaskName.toString())
                 ?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { task ->
-                    savedTaskName = args.TaskName
-                    task.let { setupScreen(task) }
+                    task.let {
+                        savedTaskName = it
+                        setupScreen(task)
+                    }
                 })
         }
     }

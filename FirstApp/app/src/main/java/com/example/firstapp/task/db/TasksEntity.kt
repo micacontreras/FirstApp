@@ -21,7 +21,7 @@ data class TasksEntity2(
 )*/
 
 @Entity(tableName = TasksEntity.TABLE_NAME)
-class TasksEntity (
+class TasksEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(index = true, name = COLUMN_ID)
     var id: Long = 0L,
@@ -36,8 +36,10 @@ class TasksEntity (
     @ColumnInfo(name = COLUMN_COLOR_EVENT)
     var colorEvent: String? = null,
     @ColumnInfo(name = COLUMN_COLOR_EVENT_INT)
-    var colorEventInt: Int? = null)
-{
+    var colorEventInt: Int? = null,
+    @ColumnInfo(name = COLUMN_STATUS)
+    var status: String? = null
+) {
     companion object {
         const val TABLE_NAME = "TasksEntity"
         const val COLUMN_ID = BaseColumns._ID
@@ -47,6 +49,7 @@ class TasksEntity (
         const val COLUMN_START_TIME = "startTime"
         const val COLUMN_COLOR_EVENT = "colorEvent"
         const val COLUMN_COLOR_EVENT_INT = "colorEventInt"
+        const val COLUMN_STATUS = "status"
 
 
         fun fromContentValues(@Nullable values: ContentValues?): TasksEntity {
@@ -69,6 +72,9 @@ class TasksEntity (
             }
             if (values != null && values.containsKey(COLUMN_COLOR_EVENT_INT)) {
                 task.colorEventInt = values.getAsInteger(COLUMN_COLOR_EVENT_INT)
+            }
+            if (values != null && values.containsKey(COLUMN_STATUS)) {
+                task.status = values.getAsString(COLUMN_STATUS)
             }
 
             return task

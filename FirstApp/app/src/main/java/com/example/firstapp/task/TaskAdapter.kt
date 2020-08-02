@@ -1,6 +1,9 @@
 package com.example.firstapp.task
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapp.R
 import com.example.firstapp.task.db.TasksEntity
 import kotlinx.android.synthetic.main.item_task.view.*
+
 
 class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<TaskAdapter.TasksViewHolder>() {
 
@@ -25,8 +29,10 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         holder.bindResponse(current, onClick, onLongClick)
     }
 
-    internal fun setItem(tasksEntityList: List<TasksEntity>) {
-        this.listTasks = tasksEntityList
+    internal fun setItem(tasksEntityList: List<TasksEntity>?) {
+        if (tasksEntityList != null) {
+            this.listTasks = tasksEntityList
+        }
         notifyDataSetChanged()
     }
 
@@ -39,7 +45,13 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         fun bindResponse(task: TasksEntity, onClick: (TasksEntity) -> Unit, onLongClick: (TasksEntity) -> Unit) = with(itemView){
             view.item_name.text = task.taskName
             view.item_description.text = task.description
-            view.item_status.text = "To do"
+            view.item_status.text = task.status
+            if (task.status == "In Progress"){
+                view.item_status.setTextColor(context.getColor(R.color.colorAccent))
+            }
+            val drawable = view.detail_layout.background as GradientDrawable
+            drawable.setStroke(3, task.colorEventInt!!)
+
             setOnClickListener{ onClick(task) }
             setOnLongClickListener {
                 onLongClick(task)

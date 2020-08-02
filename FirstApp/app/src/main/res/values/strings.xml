@@ -18,6 +18,7 @@
     <string name="color_del_evento">Color del evento</string>
     <string name="defaultColor">#e0e0e0</string>
     <string name="save">Save</string>
-    <string name="notification_text"> ha comenzado</string>
-
+    <string name="notification_text"> comenzó</string>
+    <string name="toDo">To Do</string>
+    <string name="inProgress">In Progress</string>
 </resources>

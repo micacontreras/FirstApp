@@ -109,7 +109,6 @@ class TaskProvider : ContentProvider() {
         uriMatcher.addURI(AUTHORITY, "$TASKS_ENTITY_TABLE_NAME/*", ID_TASK_DATA_ITEM)
     }
 
-
     companion object {
         const val TAG = "TaskProvider"
         const val AUTHORITY = "com.example.firstapp.provider"
