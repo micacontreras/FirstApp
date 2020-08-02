@@ -88,7 +88,7 @@ class TasksFragment : Fragment() {
                 return CursorLoader(
                     requireContext(),
                     TaskProvider.URI, arrayOf(TasksEntity.COLUMN_ID, TasksEntity.COLUMN_NAME, TasksEntity.COLUMN_DESCRIPCION, TasksEntity.COLUMN_COLOR_EVENT,
-                    TasksEntity.COLUMN_COLOR_EVENT_INT, TasksEntity.COLUMN_START_DATE, TasksEntity.COLUMN_START_TIME, TasksEntity.COLUMN_STATUS),
+                    TasksEntity.COLUMN_COLOR_EVENT_INT, TasksEntity.COLUMN_START_DATE, TasksEntity.COLUMN_START_TIME, TasksEntity.COLUMN_STATUS, TasksEntity.COLUMN_FIRM),
                     null, null, null
                 )
             }
@@ -172,7 +172,8 @@ class TasksFragment : Fragment() {
                 it.startTime,
                 it.colorEvent.toString(),
                 it.colorEventInt!!,
-                it.status.toString()
+                it.status.toString(),
+                it.firm!!
             )
             listTasks.add(taskModel)
         }

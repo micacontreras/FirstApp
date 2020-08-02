@@ -40,6 +40,7 @@
         android:label="PermissionsFragment" >
         <action
             android:id="@+id/navigateToTasks"
-            app:destination="@id/tasksFragment" />
+            app:destination="@id/tasksFragment"
+            app:popUpTo="@id/loginFragment" />
     </fragment>
 </navigation>

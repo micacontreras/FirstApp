@@ -3,8 +3,5 @@
         android:type="linear"
         android:startColor="#00A899"
         android:centerColor="#8CF490"
-        android:endColor="#009688"
-        android:centerX="0.2"
-        android:centerY="0.3"
-        android:angle="270" />
+        android:endColor="#009688" />
 </shape>

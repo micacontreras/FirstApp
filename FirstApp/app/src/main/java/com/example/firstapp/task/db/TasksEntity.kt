@@ -8,18 +8,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
-
-/*@Entity(tableName = TasksEntity.TABLE_NAME)
-data class TasksEntity2(
-    @PrimaryKey(autoGenerate = true) val id: Int=0,
-    @ColumnInfo(name = "taskName") val taskName: String,
-    @ColumnInfo(name = "description") val description: String,
-    @ColumnInfo(name = "startDate") val startDate: Date,
-    @ColumnInfo(name = "startTime") val startTime: Date,
-    @ColumnInfo(name = "colorEvent") val colorEvent: String,
-    @ColumnInfo(name = "colorEventInt") val colorEventInt: Int
-)*/
-
 @Entity(tableName = TasksEntity.TABLE_NAME)
 class TasksEntity(
     @PrimaryKey(autoGenerate = true)
@@ -38,7 +26,9 @@ class TasksEntity(
     @ColumnInfo(name = COLUMN_COLOR_EVENT_INT)
     var colorEventInt: Int? = null,
     @ColumnInfo(name = COLUMN_STATUS)
-    var status: String? = null
+    var status: String? = null,
+    @ColumnInfo(name = COLUMN_FIRM)
+    var firm: String? = null
 ) {
     companion object {
         const val TABLE_NAME = "TasksEntity"
@@ -50,6 +40,7 @@ class TasksEntity(
         const val COLUMN_COLOR_EVENT = "colorEvent"
         const val COLUMN_COLOR_EVENT_INT = "colorEventInt"
         const val COLUMN_STATUS = "status"
+        const val COLUMN_FIRM = "firm"
 
 
         fun fromContentValues(@Nullable values: ContentValues?): TasksEntity {
@@ -76,7 +67,9 @@ class TasksEntity(
             if (values != null && values.containsKey(COLUMN_STATUS)) {
                 task.status = values.getAsString(COLUMN_STATUS)
             }
-
+            if (values != null && values.containsKey(COLUMN_FIRM)) {
+                task.firm = values.getAsString(COLUMN_FIRM)
+            }
             return task
         }
     }

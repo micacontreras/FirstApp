@@ -148,26 +148,34 @@ class DetailTaskFragment : Fragment(), DatePickerDialog.OnDateSetListener,
         !validateTitle() || !validateDescription()
 
     private fun createRequest() {
-        if (savedTaskName != null) {
-            savedTaskName?.taskName = detail_title.editText?.text.toString().trim()
-            savedTaskName?.description = detail_description.editText?.text.toString().trim()
-            savedTaskName?.colorEvent = colorEvent.toString()
-            savedTaskName?.colorEventInt = colorEventInt
-            savedTaskName?.startTime = timeEvent
-            savedTaskName?.startDate = dateEvent
-            //detailTaskViewModel.insert(savedTaskName!!)
-            detailTaskViewModel.update(savedTaskName?.id!!, savedTaskName?.taskName, savedTaskName?.description, savedTaskName?.startDate,
-                savedTaskName?.startTime, savedTaskName?.colorEvent, savedTaskName?.colorEventInt)
-
+        val id = if (savedTaskName != null) {
+            savedTaskName?.id
         } else {
-            val id = 0L
-            val title = detail_title.editText?.text.toString().trim()
-            val description = detail_description.editText?.text.toString().trim()
-            val startDay = dateEvent
-            val startTime = timeEvent
-            val status= getString(R.string.toDo)
-            detailTaskViewModel.insert(TasksEntity(id, title, description, startDay, startTime, colorEvent, colorEventInt, status))
+            0L
         }
+        val title = detail_title.editText?.text.toString().trim()
+        val description = detail_description.editText?.text.toString().trim()
+        val startDay = dateEvent
+        val startTime = timeEvent
+        val status = if (savedTaskName != null) {
+            savedTaskName?.status.toString()
+        } else {
+            getString(R.string.toDo)
+        }
+        detailTaskViewModel.insert(
+            TasksEntity(
+                id!!,
+                title,
+                description,
+                startDay,
+                startTime,
+                colorEvent,
+                colorEventInt,
+                status,
+                "false"
+            )
+        )
+
     }
 
     private fun loadDate(currentDate: Boolean, dateSaved: Date? = null): List<String> {

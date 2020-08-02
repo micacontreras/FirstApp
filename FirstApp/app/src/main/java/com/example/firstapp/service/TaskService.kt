@@ -4,30 +4,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
 import com.example.firstapp.MainActivity
 import com.example.firstapp.R
 import com.example.firstapp.getCurrentTasks
-import com.example.firstapp.task.db.TaskDataBase
 import com.example.firstapp.task.db.Tasks
-import com.example.firstapp.task.db.TasksEntity
-import com.example.firstapp.task.db.TasksRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("IMPLICIT_CAST_TO_ANY", "NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -79,19 +66,22 @@ open class TaskService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun buildNotification(taskName: String) {
-        val pi = PendingIntent.getActivity(
-            applicationContext,
-            0,
-            Intent(applicationContext, MainActivity::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+
+        lateinit var pendingIntent: PendingIntent
+
+        val launchIntent =
+            packageManager.getLaunchIntentForPackage("com.example.secapp")
+        launchIntent?.let {
+            val intent: Intent = launchIntent
+            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        }
 
         val builder = NotificationCompat.Builder(applicationContext, "CHANNEL_WHATEVER")
             .setSmallIcon(R.drawable.logo)
             .setContentTitle("$taskName  ${getString(R.string.notification_text)}")
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setFullScreenIntent(pi, true)
+            .setFullScreenIntent(pendingIntent, true)
             .setGroup("Group")
 
         mgr.notify(1, builder.build())
