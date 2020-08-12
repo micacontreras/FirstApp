@@ -21,4 +21,6 @@
     <string name="notification_text"> comenzó</string>
     <string name="toDo">To Do</string>
     <string name="inProgress">In Progress</string>
+    <string name="complete">Complete</string>
+
 </resources>

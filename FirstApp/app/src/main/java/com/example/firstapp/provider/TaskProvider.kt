@@ -72,17 +72,21 @@ class TaskProvider : ContentProvider() {
         selectionArgs: Array<out String>?
     ): Int {
         Log.d(TAG, "update")
+        var count = 0
         when (uriMatcher.match(uri)) {
-            ID_TASK_DATA -> {
+            ID_TASK_DATA -> { }
+            ID_TASK_DATA_ITEM ->
                 if (context != null) {
                     Log.d("Update", "Update method was called" )
-                    return 0
+                    val context = context ?: return 0
+                    val task: TasksEntity = TasksEntity.fromContentValues(values)
+                    task.id = ContentUris.parseId(uri)
+                    TaskDataBase.getDatabase(context).taskDao().insert2(task)
+                    context.contentResolver.notifyChange(uri, null)
                 }
-                throw IllegalArgumentException("Invalid URI:  cannot update")
-            }
-            ID_TASK_DATA_ITEM -> throw IllegalArgumentException("Invalid URI:  cannot update")
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
+        return count
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
@@ -108,6 +112,7 @@ class TaskProvider : ContentProvider() {
         uriMatcher.addURI(AUTHORITY, TASKS_ENTITY_TABLE_NAME, ID_TASK_DATA)
         uriMatcher.addURI(AUTHORITY, "$TASKS_ENTITY_TABLE_NAME/*", ID_TASK_DATA_ITEM)
     }
+
 
     companion object {
         const val TAG = "TaskProvider"

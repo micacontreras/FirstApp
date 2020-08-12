@@ -6,6 +6,8 @@
 
     <color name="toDo">#FFC107</color>
     <color name="inProgress">#4CAF50</color>
+    <color name="complete">#D80606</color>
+
 
     <color name="defaultColor">#03A9F4</color>
 </resources>

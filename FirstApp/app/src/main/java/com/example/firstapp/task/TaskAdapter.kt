@@ -47,7 +47,11 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
             view.item_description.text = task.description
             view.item_status.text = task.status
             if (task.status == "In Progress"){
-                view.item_status.setTextColor(context.getColor(R.color.colorAccent))
+                view.item_status.setTextColor(context.getColor(R.color.inProgress))
+            }
+            if (task.status == "Complete" || task.firm == "true"){
+                view.item_status.text = "Complete"
+                view.item_status.setTextColor(context.getColor(R.color.complete))
             }
             val drawable = view.detail_layout.background as GradientDrawable
             drawable.setStroke(3, task.colorEventInt!!)

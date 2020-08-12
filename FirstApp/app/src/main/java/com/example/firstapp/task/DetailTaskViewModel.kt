@@ -23,18 +23,5 @@ class DetailTaskViewModel(application: Application) : AndroidViewModel(applicati
         repository.insert(task)
     }
 
-    fun update(
-        id: Long,
-        tit: String?,
-        descript: String?,
-        date: Date?,
-        time: Date?,
-        color: String?,
-        colorInt: Int?
-    ) =
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.update(id, tit, descript, date, time, color, colorInt)
-        }
-
     fun getTask(taskName: String): LiveData<TasksEntity>? = repository.getTask(taskName)
 }

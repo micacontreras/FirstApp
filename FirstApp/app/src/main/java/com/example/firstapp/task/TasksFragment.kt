@@ -73,8 +73,6 @@ class TasksFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        val newList = getCurrentTasksEntity(requireContext(), listTasks)
-        changeStatus(newList)
     }
 
     private fun provider() {
@@ -104,9 +102,21 @@ class TasksFragment : Fragment() {
             task_progress_bar.visibility = View.INVISIBLE
             if (task != null) {
                 if (task.isNotEmpty()) {
+                    task.forEach {
+                        if(it.firm.equals("true")){
+                            it.status = getString(R.string.complete)
+                            taskViewModel.insert(it)
+                        }
+                    }
                     adapter.setItem(task)
                     startTaskService(task)
-                    listTasks.addAll(task)
+                    task.forEach {
+                        if(it.status.equals(getString(R.string.toDo))){
+                            val newList = getCurrentTasksEntity(requireContext(), task)
+                            changeStatus(newList)
+                        }
+                    }
+
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -140,9 +150,13 @@ class TasksFragment : Fragment() {
         }
 
         adapter.onClick = {
-            Bundle().apply { putString("TaskName", it.taskName) }
-                .also { setFragmentResult("task", it) }
-            findNavController().navigate(TasksFragmentDirections.navigateToDetail(it.taskName))
+            if(it.status == getString(R.string.complete) || it.firm.equals("true")){
+                Toast.makeText(requireContext(), "Task complete", Toast.LENGTH_LONG).show()
+            } else {
+                Bundle().apply { putString("TaskName", it.taskName) }
+                    .also { setFragmentResult("task", it) }
+                findNavController().navigate(TasksFragmentDirections.navigateToDetail(it.taskName))
+            }
         }
 
         adapter.onLongClick = {
@@ -164,18 +178,20 @@ class TasksFragment : Fragment() {
     private fun startTaskService(tasks: List<TasksEntity>) {
         val listTasks: MutableList<Tasks> = ArrayList()
         tasks.forEach {
-            val taskModel = Tasks(
-                it.id,
-                it.taskName.toString(),
-                it.description.toString(),
-                it.startDate,
-                it.startTime,
-                it.colorEvent.toString(),
-                it.colorEventInt!!,
-                it.status.toString(),
-                it.firm!!
-            )
-            listTasks.add(taskModel)
+            if(!it.status.equals(getString(R.string.complete))){
+                val taskModel = Tasks(
+                    it.id,
+                    it.taskName.toString(),
+                    it.description.toString(),
+                    it.startDate,
+                    it.startTime,
+                    it.colorEvent.toString(),
+                    it.colorEventInt!!,
+                    it.status.toString(),
+                    it.firm!!
+                )
+                listTasks.add(taskModel)
+            }
         }
 
         Intent(requireContext(), TaskService::class.java).also { intent ->

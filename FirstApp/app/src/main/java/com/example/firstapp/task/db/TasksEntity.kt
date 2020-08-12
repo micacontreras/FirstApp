@@ -48,12 +48,14 @@ class TasksEntity(
             if (values != null && values.containsKey(COLUMN_ID)) {
                 task.id = values.getAsLong(COLUMN_ID)
             }
+            if (values != null && values.containsKey(COLUMN_NAME)) {
+                task.taskName = values.getAsString(COLUMN_NAME)
+            }
             if (values != null && values.containsKey(COLUMN_DESCRIPCION)) {
                 task.description = values.getAsString(COLUMN_DESCRIPCION)
             }
             if (values != null && values.containsKey(COLUMN_START_DATE)) {
                 task.startDate = Converters().fromTimestamp(values.getAsLong(COLUMN_START_DATE))!!
-
             }
             if (values != null && values.containsKey(COLUMN_START_TIME)) {
                 task.startTime = Converters().fromTimestamp(values.getAsLong(COLUMN_START_TIME))!!

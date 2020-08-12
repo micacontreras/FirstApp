@@ -2,11 +2,8 @@ package com.example.firstapp.task.db
 
 import android.database.Cursor
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import java.util.*
+import androidx.room.*
+
 
 @Dao
 interface TasksDao {
@@ -16,8 +13,11 @@ interface TasksDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg task: TasksEntity)
 
-    @Query("UPDATE TasksEntity SET taskName = :tit, description = :descript, startDate = :date, startTime = :time, colorEvent = :color, colorEventInt = :colorInt  WHERE _id = :id")
-    suspend fun update(id: Long, tit: String?, descript: String?, date: Date?, time: Date?, color: String?, colorInt: Int?)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert2(vararg task: TasksEntity)
+
+    @Update
+    fun update(task: TasksEntity?): Int
 
     @Query("DELETE FROM TasksEntity WHERE taskName = :taskName")
     suspend fun delete(taskName: String)
